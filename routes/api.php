@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\GaleryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,4 +18,20 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::post('auth/login', [AuthController::class, 'login']);
+
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::prefix('auth')->group(function () {
+        Route::post('logout', [AuthController::class, 'logout']);
+    });
+    
+    Route::prefix('galery')->group(function () {
+        Route::get('/', [GaleryController::class, 'index']);
+        Route::post('/', [GaleryController::class, 'store']);
+        Route::get('/{id}', [GaleryController::class, 'show']);
+        Route::patch('/{id}', [GaleryController::class, 'update']);
+        Route::delete('/{id}', [GaleryController::class, 'destroy']);
+    });
 });
